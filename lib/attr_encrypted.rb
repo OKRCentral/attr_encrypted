@@ -181,7 +181,7 @@ module AttrEncrypted
   #
   # It will inherit existing options from its superclass
   def attr_encrypted_options
-    @attr_encrypted_options ||= superclass.attr_encrypted_options.dup
+    @attr_encrypted_options ||= superclass.attr_encrypted_options.deep_dup
   end
 
   def attr_encrypted_default_options
@@ -354,7 +354,8 @@ module AttrEncrypted
     # and their corresponding options as values to the instance
     #
     def encrypted_attributes
-      @encrypted_attributes ||= self.class.encrypted_attributes.dup
+      # Do a deep copy to avoid any concurrent modification issues.
+      @encrypted_attributes ||= self.class.encrypted_attributes.deep_dup
     end
 
     protected

@@ -51,7 +51,15 @@ if defined?(ActiveRecord::Base)
             super
             options = attrs.extract_options!
             attr = attrs.pop
-            attribute attr if ::ActiveRecord::VERSION::STRING >= "5.1.0"
+
+            # NOTE_RAILS_5. The following virtual attribute definition results in a weird "can't quote Hash" error while persisting to the DB.
+            # 
+            # It is possibly due to the reason the raw column is already defined whereas we are trying to define it again.
+            #
+            # Checking for !attribute_names.include?(attr.to_s) doesn't help either.
+            #
+            # attribute attr if ::ActiveRecord::VERSION::STRING >= "5.1.0"
+
             options.merge! encrypted_attributes[attr]
 
             define_method("#{attr}_was") do
